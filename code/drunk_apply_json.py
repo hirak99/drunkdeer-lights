@@ -67,18 +67,19 @@ def _apply_bytes_array(bytes_array_to_write: list[bytearray]):
         device.detach_kernel_driver(interface)
         reattach = True
 
-    for bytes_to_write in bytes_array_to_write:
-        endpoint.write(bytes_to_write)
+    try:
+        for bytes_to_write in bytes_array_to_write:
+            endpoint.write(bytes_to_write)
 
-        try:
-            endpoint_in.read(endpoint_in.wMaxPacketSize)
-        except usb.core.USBTimeoutError:
-            print("Read timed out")
-
-    if reattach:
-        print("Reattaching...")
-        usb.util.dispose_resources(device)
-        device.attach_kernel_driver(interface)
+            try:
+                endpoint_in.read(endpoint_in.wMaxPacketSize)
+            except usb.core.USBTimeoutError:
+                print("Read timed out")
+    finally:
+        if reattach:
+            print("Reattaching...")
+            usb.util.dispose_resources(device)
+            device.attach_kernel_driver(interface)
 
 
 def _static_json_iterate(static: list[list[int | list[str]]]):
