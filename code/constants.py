@@ -11,3 +11,9 @@ G65_KEYNUMS = set(
         ","
     )
 )
+
+G65_KEYGROUPS = {
+    "wasd": [172, 192, 193, 194],
+    "numbers": list(range(150, 161)),
+    "arrows": [225, 245, 246, 247],
+}

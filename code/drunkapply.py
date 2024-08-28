@@ -4,6 +4,7 @@
 import argparse
 import json
 import re
+import sys
 import usb.core
 import usb.util
 
@@ -120,15 +121,15 @@ def _apply(brighness: int, static_json: dict[str, str]):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="DrunkDeer USB driver")
-    parser.add_argument(
-        "color_config",
-        type=str,
-        help="A file with the json for color.",
-    )
-    args = parser.parse_args()
-    with open(args.color_config) as f:
-        parsed_json = json.load(f)
+    if len(sys.argv) > 2:
+        raise ValueError("Need only one argument, the name of a json file.")
+
+    if len(sys.argv) == 2:
+        with open(sys.argv[1]) as f:
+            parsed_json = json.load(f)
+    else:
+        parsed_json = json.loads(sys.stdin.read())
+
     _apply(parsed_json["bright"], parsed_json["colors"])
 
 
