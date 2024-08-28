@@ -63,7 +63,7 @@ def _apply_bytes_array(bytes_array_to_write: list[bytearray]):
 
     reattach = False
     if device.is_kernel_driver_active(interface):
-        print("kernel driver is active, detaching")
+        print("kernel driver is active, detaching...")
         device.detach_kernel_driver(interface)
         reattach = True
 
