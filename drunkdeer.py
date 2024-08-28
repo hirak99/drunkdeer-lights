@@ -141,17 +141,10 @@ def main():
         type=str,
         help="A file with the json for color.",
     )
-    parser.add_argument(
-        "-b",
-        "--brightness",
-        type=int,
-        default=9,
-        help="Brightness - 0 to 9; 0 is off",
-    )
     args = parser.parse_args()
     with open(args.color_config) as f:
-        static_json = json.load(f)
-    _apply(args.brightness, static_json)
+        parsed_json = json.load(f)
+    _apply(parsed_json["bright"], parsed_json["colors"])
 
 
 if __name__ == "__main__":
