@@ -1,9 +1,6 @@
 # Generates a drunkdeer 65 static color config json.
 #
-# The config can be applied with drunkapply.
-#
-# Example -
-# drunk-gen "_b 9 all ff0000 wasd,numbers,arrows ff4100" | drunk-apply-json
+# The config can be applied with drunk_apply.
 
 import argparse
 import json
