@@ -9,43 +9,10 @@ import re
 import usb.core
 import usb.util
 
-_INIT = """
-0040   04 a0 02 00 00 00 00 00 00 00 00 00 00 00 00 00
-0050   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0060   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0070   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-"""
-
+# This is the preamble, rest will be computed.
 # Note:
 # 6th byte is speed, from '00' to '09'.
 # 7th byte is brightness, from '00' to '09'.
-_OFF = """
-0040   04 ae 01 00 00 01 05 09 00 00 00 00 00 00 00 00
-0050   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0060   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0070   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-"""
-
-_ROTATE_MARQUEE = """
-0040   04 ae 01 00 00 00 05 09 00 00 00 00 00 00 00 00
-0050   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0060   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0070   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-"""
-
-_TURBO_MODE = """
-0040   04 b5 00 1e 01 00 00 01 01 00 00 00 00 00 00 00
-0050   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0060   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0070   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-
-0040   04 b6 03 00 00 00 00 00 00 00 00 00 00 00 00 00
-0050   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0060   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-0070   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-"""
-
-# This is the preamble, rest will be computed.
 _STATIC = """
 0040   04 ae 01 00 00 13 06 09 ff
 """
@@ -62,13 +29,16 @@ def _parse_hexdump(hexdump: str) -> list[bytearray]:
         thisbytes = m.group("bytes")
         # print(thisbytes)
         array[-1].extend(bytes.fromhex(thisbytes.replace(" ", "")))
-    return [x for x in array if len(x)>0]
+    return [x for x in array if len(x) > 0]
 
 
 _IN_ID = 0x82
 _OUT_ID = 0x03
 
-def _find_interface_endpoint(configuration: usb.core.Configuration) -> tuple[int, int, int]:
+
+def _find_interface_endpoint(
+    configuration: usb.core.Configuration,
+) -> tuple[int, int, int]:
     for interface in configuration.interfaces():
         endpoint_in = None
         endpoint_out = None
@@ -85,6 +55,7 @@ def _find_interface_endpoint(configuration: usb.core.Configuration) -> tuple[int
             return interface.bInterfaceNumber, endpoint_in, endpoint_out
     raise RuntimeError("Endpoint not found in device")
 
+
 def static_json_iterate(static: list[list[int | list[str]]]):
     for keycode, colors in static:
         assert isinstance(keycode, int)
@@ -93,13 +64,14 @@ def static_json_iterate(static: list[list[int | list[str]]]):
             yield (keycode, color)
             keycode += 1
 
+
 def encode_static(brightness: int, static):
     preamble = _parse_hexdump(_STATIC)[0]
     result = []
     assert 0 <= brightness <= 9
     preamble[7] = brightness
     for keycode, color in static_json_iterate(static):
-        if not result or len(result[-1]) >= 16*4 - 3:
+        if not result or len(result[-1]) >= 16 * 4 - 3:
             result.append(preamble.copy())
         current = result[-1]
         current.append(keycode)
@@ -108,9 +80,10 @@ def encode_static(brightness: int, static):
         current += color_bytes
     for payload in result[2:]:
         if len(payload) <= 16 * 4 - 3:
-            payload += b'\xff\x00\x00'
-        payload += b'\x00' * (16 * 4 - len(payload))
+            payload += b"\xff\x00\x00"
+        payload += b"\x00" * (16 * 4 - len(payload))
     return result
+
 
 def _apply_to_device(brighness: int, static_json: dict[str, str]):
     device = usb.core.find(idVendor=0x352D, idProduct=0x2382)
@@ -128,11 +101,11 @@ def _apply_to_device(brighness: int, static_json: dict[str, str]):
         device.detach_kernel_driver(interface)
         reattach = True
 
-    bytes_array_to_write = encode_static(brightness=9, static=static_json)
+    bytes_array_to_write = encode_static(brightness=brighness, static=static_json)
 
-    init_bytes = _parse_hexdump(_INIT)
-    endpoint.write(init_bytes[0])
-    endpoint_in.read(endpoint_in.wMaxPacketSize)
+    # init_bytes = _parse_hexdump(_INIT)
+    # endpoint.write(init_bytes[0])
+    # endpoint_in.read(endpoint_in.wMaxPacketSize)
 
     for bytes_to_write in bytes_array_to_write:
         print(bytes_to_write)
@@ -157,7 +130,7 @@ def main():
         "--brightness",
         type=int,
         required=True,
-        help="Brightness - 0 to 9; 0 is off"
+        help="Brightness - 0 to 9; 0 is off",
     )
     parser.add_argument(
         "--color-config",
