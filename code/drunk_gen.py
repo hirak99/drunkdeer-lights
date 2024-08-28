@@ -3,7 +3,7 @@
 # The config can be applied with drunkapply.
 #
 # Example -
-# drunkgen "all ff0000 wasd,numbers,arrows ff4100" | drunkapply
+# drunk-gen "all ff0000 wasd,numbers,arrows ff4100" | drunk-apply-json
 
 import argparse
 import json

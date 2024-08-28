@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python -m code.drunk_gen "$@"
