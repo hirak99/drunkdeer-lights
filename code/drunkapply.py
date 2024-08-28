@@ -1,5 +1,3 @@
-#!/bin/python
-#
 # To use this without root, also add the following in /etc/udev/rules.d/99-custom.rules -
 # SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", ATTRS{idProduct}=="3e41", MODE="0666"
 
@@ -9,6 +7,8 @@ import re
 import usb.core
 import usb.util
 
+from . import constants
+
 # This is the preamble, rest will be computed.
 # Note:
 # 6th byte is speed, from '00' to '09' - not used for static.
@@ -16,21 +16,6 @@ import usb.util
 _STATIC = """
 0040   04 ae 01 00 00 13 06 09 ff
 """
-
-# This is only used for doublechecking before applying keycodes, to ensure no unknown keycode is used.
-_G65_KEYNUMS = set(
-    int(x.strip())
-    for x in """
-149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163,
-170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184,
-191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202,      204, 205,
-212,      214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226,
-233, 234, 235,                239,           242, 243, 244, 245, 246, 247
-""".split(
-        ","
-    )
-)
-
 
 def _parse_hexdump(hexdump: str) -> list[bytearray]:
     array: list[bytearray] = [bytearray()]
@@ -119,7 +104,7 @@ def _encode_static(brightness: int, static):
         color_bytes = bytes.fromhex(color)
         assert len(color_bytes) == 3
         current += color_bytes
-    unexpected_keycodes = keycodes_found - _G65_KEYNUMS
+    unexpected_keycodes = keycodes_found - constants.G65_KEYNUMS
     if unexpected_keycodes:
         raise RuntimeError(f"Unknown keycodes: {sorted(unexpected_keycodes)}")
     for payload in result[2:]:
