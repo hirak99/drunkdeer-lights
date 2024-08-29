@@ -16,6 +16,9 @@ Examples -
 # Value can range between 0 to 9.
 ./drunk-lights "_b 5 all 0041ff wasd,numbers,arrows 41ff00" | ./drunk-apply
 
+# 3-zone gradient.
+./drunk-lights "zone1of3 ff7f00 zone2of3 ff4100 zone3of3 ff0000" | ./drunk-apply
+
 # Default is black.
 # So empty string switches evertyhing off.
 ./drunk-lights "" | ./drunk-apply
