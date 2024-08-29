@@ -15,4 +15,10 @@ Examples -
 # _b [BRIGHTNESS] controls brightness through the keyboard firmware.
 # Value can range between 0 to 9.
 ./drunk-lights "_b 5 all 0041ff wasd,numbers,arrows 41ff00" | ./drunk-apply
+
+# Default is black.
+# So empty string switches evertyhing off.
+./drunk-lights "" | ./drunk-apply
+# Equivalently setting brightness to zero switches colors off.
+./drunk-lights "_b 0" | ./drunk-apply
 ```
