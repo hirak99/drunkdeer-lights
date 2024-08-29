@@ -3,4 +3,6 @@
 # # Example -
 # drunk-lights "_b 9 all ff0000 wasd,numbers,arrows ff4100" | drunk-apply
 
+set -ueo pipefail
+
 python -m code.drunk_lights "$@"
