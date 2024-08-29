@@ -20,6 +20,24 @@ def _parse_directives(directives: str):
             yield (keygroup, argument)
 
 
+def _adjust_brightness(color: str, brightness: float) -> str:
+    if not len(color) == 6:
+        raise ValueError(f"Color is {color=}, but must be of length 6, e.g. ff4100.")
+    values = (brightness * int(color[2 * n : 2 * n + 2], 16) for n in range(3))
+    values = (max(0, min(255, int(x + 0.5))) for x in values)
+    return "".join(f"{x:02x}" for x in values)
+
+
+def _get_rgb_color(color: str) -> str:
+    brightness = 1
+    if "@" in color:
+        color, brightness = color.split("@")
+        if not brightness.endswith("%"):
+            raise ValueError("Color brightness must be percentage, e.g. ff4100@50%")
+        brightness = float(brightness[:-1]) / 100
+    return _adjust_brightness(color, brightness)
+
+
 def _generate(directives: str):
     brightness = 9
     key_colors = {x: "000000" for x in constants.G65_KEYNUMS}
@@ -32,8 +50,7 @@ def _generate(directives: str):
         else:
             keys = constants.G65_KEYGROUPS[command]
         for key in keys:
-            key_colors[key] = argument
-    lastkey = 0
+            key_colors[key] = _get_rgb_color(argument)
 
     # Generate json.
     color_json: list[tuple[int, list[str]]] = []
