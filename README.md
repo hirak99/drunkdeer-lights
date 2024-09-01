@@ -19,6 +19,10 @@ Examples -
 # 3-zone gradient.
 ./drunk-lights "zone1of3 ff7f00 zone2of3 ff4100 zone3of3 ff0000" | ./drunk-apply
 
+# Individual buttons. Note that `arrows` is also included in `zone1of3`.
+# The latest assignment takes priority.
+./drunk-lights "_b 5 zone1of3 ff7f00 zone2of3 ff4100 zone3of3,caps ff0000 arrows ff4100" | ./drunk-apply
+
 # Default is black.
 # So empty string switches evertyhing off.
 ./drunk-lights "" | ./drunk-apply
