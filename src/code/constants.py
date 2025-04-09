@@ -15,6 +15,10 @@ G65_KEYNUMS = set(
 G65_KEYGROUPS = {
     "caps": [191],
     "menu": [244],
+    "fn": [243],
+    "alts": [235, 242],
+    "win": [234],
+    "ctrl": [233],
 
     "wasd": [172, 192, 193, 194],
     "numbers": list(range(150, 160)),
