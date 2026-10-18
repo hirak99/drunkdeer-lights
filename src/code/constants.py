@@ -19,6 +19,9 @@ G65_KEYGROUPS = {
     "alts": [235, 242],
     "win": [234],
     "ctrl": [233],
+    "space": [239],
+
+    "red_keys": [149, 204, 239],
 
     "wasd": [172, 192, 193, 194],
     "numbers": list(range(150, 160)),
