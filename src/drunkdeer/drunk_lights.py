@@ -10,6 +10,8 @@ from . import constants
 
 def _parse_directives(directives: str):
     tokens = [x.strip() for x in directives.split() if x.strip()]
+    if len(tokens) % 2 != 0:
+        raise ValueError("Directives must come in pairs: group color [group color ...]")
     index = 0
     while index < len(tokens):
         keygroups = tokens[index]
