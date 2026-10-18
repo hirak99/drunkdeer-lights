@@ -19,13 +19,11 @@ Then reload: `sudo udevadm control --reload-rules && sudo udevadm trigger`
 
 
 ```sh
-# Orange-red.
 # Run from the src/ directory, or add it to your PATH.
-./drunk-lights "all ff4100 wasd,numbers,arrows ff4100" | ./drunk-apply
 
-# Orange-red with glowing WASD.
+# Orange-red with darker red WASD, numbers, and arrows.
 # Color can have an optional ...@[BRIGHTNESS]%.
-./drunk-lights "all ff4100@35% wasd ff4100@75% numbers,arrows ff0000@35%" | ./drunk-apply
+./drunk-lights "all ff4100@75% wasd,numbers,arrows ff0000@35%" | ./drunk-apply
 
 # Blue-green with brightness 5.
 # _b [BRIGHTNESS] controls brightness through the keyboard firmware.
