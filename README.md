@@ -1,4 +1,12 @@
-# Generate and apply static lighting configs
+# Save and apply static lighting configs for the DrunkDeer keyboard
+
+DrunkDeer's web driver can't store or switch between lighting setups: changing one means hunting and pecking through the GUI to recreate it. I wanted to swap or revert configs as I try out new color setups.
+
+Since the RGB protocol has no vendor documentation, I reverse-engineered it for the DrunkDeer G65 from USB traffic captured in Wireshark, and wrote this CLI.
+
+Each config is just text you can save as a file or script, then re-apply whenever you like. The Examples below are just such text.
+
+Demo: https://youtu.be/A7czXJXqMb0
 
 ## Prerequisites
 
