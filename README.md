@@ -5,6 +5,16 @@
 - Python 3.12+
 - pyusb: `pip install pyusb`
 
+## USB Permissions
+
+To use without root, add a udev rule (e.g. in `/etc/udev/rules.d/99-custom.rules`):
+
+```udev
+SUBSYSTEM=="usb", ATTRS{idVendor}=="352d", ATTRS{idProduct}=="2382", MODE="0666"
+```
+
+Then reload: `sudo udevadm control --reload-rules && sudo udevadm trigger`
+
 ## Examples
 
 

@@ -1,6 +1,3 @@
-# To use this without root, also add the following in /etc/udev/rules.d/99-custom.rules -
-# SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", ATTRS{idProduct}=="3e41", MODE="0666"
-
 import json
 import re
 import sys
