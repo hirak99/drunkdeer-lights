@@ -2,8 +2,8 @@
 
 ## Prerequisites
 
-- Python 3.9+
-- pyusb: `pip install -r requirements.txt`
+- Python 3.12+
+- pyusb: `pip install pyusb`
 
 ## Examples
 
