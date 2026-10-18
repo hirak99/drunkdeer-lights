@@ -1,6 +1,12 @@
 # Generate and apply static lighting configs
 
-Examples -
+## Prerequisites
+
+- Python 3.9+
+- pyusb: `pip install -r requirements.txt`
+
+## Examples
+
 
 ```sh
 # Orange-red.
