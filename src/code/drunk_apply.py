@@ -1,10 +1,10 @@
 # To use this without root, also add the following in /etc/udev/rules.d/99-custom.rules -
 # SUBSYSTEM=="usb", ATTRS{idVendor}=="03f0", ATTRS{idProduct}=="3e41", MODE="0666"
 
-import argparse
 import json
 import re
 import sys
+from typing import cast
 import usb.core
 import usb.util
 
@@ -26,6 +26,8 @@ def _parse_hexdump(hexdump: str) -> list[bytearray]:
             array.append(bytearray())
             continue
         m = re.fullmatch(r"^\d{4}\s+(?P<bytes>.*)", line)
+        if m is None:
+            raise ValueError(f"Invalid hexdump line: {line}")
         thisbytes = m.group("bytes")
         array[-1].extend(bytes.fromhex(thisbytes.replace(" ", "")))
     return [x for x in array if len(x) > 0]
@@ -37,17 +39,17 @@ _OUT_ID = 0x03
 
 def _find_interface_endpoint(
     configuration: usb.core.Configuration,
-) -> tuple[int, int, int]:
+) -> tuple[int, usb.core.Endpoint, usb.core.Endpoint]:
     for interface in configuration.interfaces():
-        endpoint_in = None
-        endpoint_out = None
-        for ep_index in range(interface.bNumEndpoints):
-            if interface[ep_index].bEndpointAddress == _IN_ID:
+        endpoint_in: usb.core.Endpoint | None = None
+        endpoint_out: usb.core.Endpoint | None = None
+        for ep_index in range(interface.bNumEndpoints):  # type: ignore[attr-defined]
+            if interface[ep_index].bEndpointAddress == _IN_ID:  # type: ignore[attr-defined]
                 endpoint_in = interface[ep_index]
-            if interface[ep_index].bEndpointAddress == _OUT_ID:
+            if interface[ep_index].bEndpointAddress == _OUT_ID:  # type: ignore[attr-defined]
                 endpoint_out = interface[ep_index]
         if endpoint_in is not None and endpoint_out is not None:
-            return interface.bInterfaceNumber, endpoint_in, endpoint_out
+            return interface.bInterfaceNumber, endpoint_in, endpoint_out  # type: ignore[attr-defined]
     raise RuntimeError("Endpoint not found in device")
 
 
@@ -57,7 +59,7 @@ def _apply_bytes_array(bytes_array_to_write: list[bytearray]):
         raise RuntimeError("The USB device was not found")
     assert isinstance(device, usb.core.Device)
 
-    config = device.get_active_configuration()
+    config = cast(usb.core.Configuration, device.get_active_configuration())
 
     interface, endpoint_in, endpoint = _find_interface_endpoint(config)
 
@@ -72,7 +74,7 @@ def _apply_bytes_array(bytes_array_to_write: list[bytearray]):
             endpoint.write(bytes_to_write)
 
             try:
-                endpoint_in.read(endpoint_in.wMaxPacketSize)
+                endpoint_in.read(endpoint_in.wMaxPacketSize)  # type: ignore[attr-defined]
             except usb.core.USBTimeoutError:
                 print("Read timed out")
     finally:
