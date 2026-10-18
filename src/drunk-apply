@@ -3,4 +3,4 @@
 set -ueo pipefail
 
 cd "$(dirname "$(realpath "$0")")"
-python -m code.drunk_apply "$@"
+python -m drunkdeer.drunk_apply "$@"
