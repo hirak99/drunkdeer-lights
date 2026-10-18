@@ -20,7 +20,7 @@ Then reload: `sudo udevadm control --reload-rules && sudo udevadm trigger`
 
 ```sh
 # Orange-red.
-# The "./" can be omitted in both places if this is in path.
+# Run from the src/ directory, or add it to your PATH.
 ./drunk-lights "all ff4100 wasd,numbers,arrows ff4100" | ./drunk-apply
 
 # Orange-red with glowing WASD.
@@ -40,7 +40,7 @@ Then reload: `sudo udevadm control --reload-rules && sudo udevadm trigger`
 ./drunk-lights "_b 5 zone1of3 ff7f00 zone2of3 ff4100 zone3of3,caps ff0000 arrows ff4100" | ./drunk-apply
 
 # Default is black.
-# So empty string switches evertyhing off.
+# So empty string switches everything off.
 ./drunk-lights "" | ./drunk-apply
 # Equivalently setting brightness to zero switches colors off.
 ./drunk-lights "_b 0" | ./drunk-apply
