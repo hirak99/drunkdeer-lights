@@ -40,7 +40,7 @@ def _get_rgb_color(color: str) -> str:
 
 def _generate(directives: str):
     brightness = 9
-    key_colors = {x: "000000" for x in constants.G65_KEYNUMS}
+    key_colors = dict.fromkeys(constants.G65_KEYNUMS, "000000")
     for command, argument in _parse_directives(directives):
         if command == "_b":
             brightness = int(argument)

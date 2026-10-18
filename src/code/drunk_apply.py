@@ -4,11 +4,13 @@
 import json
 import re
 import sys
-from typing import cast
+
 import usb.core
 import usb.util
 
 from . import constants
+
+from typing import cast
 
 # This is the preamble, rest will be computed.
 # Note:
@@ -17,6 +19,7 @@ from . import constants
 _STATIC = """
 0040   04 ae 01 00 00 13 06 09 ff
 """
+
 
 def _parse_hexdump(hexdump: str) -> list[bytearray]:
     array: list[bytearray] = [bytearray()]
